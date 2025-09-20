@@ -32,6 +32,7 @@ model Comment {
   id         Int      @id @default(autoincrement())
   post       Post     @relation(fields: [postId], references: [id])
   postId     Int
+  ip         String
   authorName String?
   text       String
   createdAt  DateTime @default(now())
@@ -39,13 +40,14 @@ model Comment {
 
 model Complaint {
   id        Int      @id @default(autoincrement())
-  post      Post     @relation(fields: [postId], references: [id])
   postId    Int
   reason    String
+  ip        String
   createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id])
 }
 
-model Admin {
+model Users {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   password  String
@@ -57,5 +59,7 @@ model Like {
   id        Int      @id @default(autoincrement())
   post      Post     @relation(fields: [postId], references: [id])
   postId    Int
+  like      Boolean
+  ip        String
   createdAt DateTime @default(now())
 }

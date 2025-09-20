@@ -15,7 +15,39 @@ export class PostsService {
 
     query.text && (where.text = { contains: query.text, mode: 'insensitive' })
 
-    const data = await this.prisma.post.findMany({ where, skip, take, select: { id: true, authorName: true, text: true, likeCount: true, viewCount: true, complaintCount: true, comments: true, likes: true, complaints: true, createdAt: true, updatedAt: true } })
+    const data = await this.prisma.post.findMany({
+      where,
+      skip,
+      take,
+      select: {
+        id: true,
+        authorName: true,
+        text: true,
+        likeCount: true,
+        viewCount: true,
+        complaintCount: true,
+        createdAt: true,
+        updatedAt: true,
+
+        comments: {
+          select: {
+            id: true,
+            authorName: true,
+            text: true,
+            createdAt: true
+          }
+        },
+
+        complaints: {
+          select: {
+            id: true,
+            postId: true,
+            reason: true,
+            createdAt: true,
+          }
+        }
+      }
+    })
 
     if (data.length === 0) {
       throw new NotFoundException({ success: false, message: 'Post not found !' })
@@ -25,11 +57,43 @@ export class PostsService {
   }
 
   async getOne(id: number) {
-    const data = await this.prisma.post.findUnique({ where: { id }, select: { id: true, authorName: true, text: true, likeCount: true, viewCount: true, complaintCount: true, comments: true, likes: true, complaints: true, createdAt: true, updatedAt: true } })
+    const data = await this.prisma.post.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        authorName: true,
+        text: true,
+        likeCount: true,
+        viewCount: true,
+        complaintCount: true,
+        createdAt: true,
+        updatedAt: true,
+
+        comments: {
+          select: {
+            id: true,
+            authorName: true,
+            text: true,
+            createdAt: true
+          }
+        },
+
+        complaints: {
+          select: {
+            id: true,
+            postId: true,
+            reason: true,
+            createdAt: true,
+          }
+        }
+      }
+    })
 
     if (!data) {
       throw new NotFoundException({ success: false, message: 'Post not found !' })
     }
+
+    await this.prisma.post.update({ where: { id }, data: { viewCount: { increment: 1 } } })
 
     return { success: true, data }
   }
@@ -37,7 +101,6 @@ export class PostsService {
 
   async create(payload: CreatePostDto, req: Request) {
     const ip: string = req.headers['x-forwarded-for']?.toString().split(',')[0] ?? req.socket.remoteAddress ?? '';
-    console.log(ip)
 
     await this.prisma.post.create({ data: { ...payload, ip } });
 
