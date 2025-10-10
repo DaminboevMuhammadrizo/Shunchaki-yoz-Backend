@@ -26,7 +26,7 @@ jobs:
 
             if [ ! -d "Shunchaki-yoz-Backend/.git" ]; then
               echo "Cloning repository!"
-              git clone https://github.com/DaminboevMuhammadrizo/Shunchaki-yoz-Backend
+              git clone --depth 1 https://github.com/DaminboevMuhammadrizo/Shunchaki-yoz-Backend
             else
               echo "Pulling latest changes!"
               cd Shunchaki-yoz-Backend
