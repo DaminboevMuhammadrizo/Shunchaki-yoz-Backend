@@ -21,21 +21,23 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             echo "Creating project folder if it doesn't exist!"
-            mkdir -p /root
-            cd /root
+            mkdir -p ~/project
+            cd ~/project
 
-            if [ ! -d "educoin/.git" ]; then
+            if [ ! -d "Shunchaki-yoz-Backend/.git" ]; then
               echo "Cloning repository!"
               git clone https://github.com/DaminboevMuhammadrizo/Shunchaki-yoz-Backend
             else
               echo "Pulling latest changes!"
-              cd educoin
+              cd Shunchaki-yoz-Backend
               git fetch origin main
               git reset --hard origin/main
             fi
 
+            cd Shunchaki-yoz-Backend
+
             echo "Stopping containers"
-            docker compose down
+            docker compose down || true
 
             echo "Building containers"
             docker compose build
