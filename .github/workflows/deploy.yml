@@ -24,17 +24,16 @@ jobs:
             mkdir -p ~/project
             cd ~/project
 
-            if [ ! -d "Shunchaki-yoz-Backend/.git" ]; then
-              echo "Cloning repository!"
-              git clone --depth 1 https://github.com/DaminboevMuhammadrizo/Shunchaki-yoz-Backend
-            else
+            if [ -d "Shunchaki-yoz-Backend" ]; then
               echo "Pulling latest changes!"
               cd Shunchaki-yoz-Backend
               git fetch origin main
               git reset --hard origin/main
+            else
+              echo "Cloning repository!"
+              git clone --depth 1 https://github.com/DaminboevMuhammadrizo/Shunchaki-yoz-Backend
+              cd Shunchaki-yoz-Backend
             fi
-
-            cd Shunchaki-yoz-Backend
 
             echo "Stopping containers"
             docker compose down || true
